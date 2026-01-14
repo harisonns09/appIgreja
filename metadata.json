@@ -1,0 +1,7 @@
+{
+  "name": "Eclésia - Sistema de Gestão de Membros",
+  "description": "Um sistema moderno e intuitivo para cadastro e gestão de membros de igrejas, com integração de IA para insights e comunicação.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
