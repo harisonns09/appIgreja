@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -9,30 +8,51 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="bg-slate-50 text-slate-900 h-screen overflow-hidden flex">
+    
     <div id="sidebar-container"></div>
+
     <main class="flex-1 overflow-y-auto flex flex-col">
+        
         <div id="header-container"></div>
-        <div class="p-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" id="stat-cards">
-                <!-- Preenchido via JS -->
+
+        <div class="p-4 md:p-8">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8" id="stat-cards">
+                <div class="animate-pulse bg-slate-200 h-24 rounded-2xl"></div>
+                <div class="animate-pulse bg-slate-200 h-24 rounded-2xl"></div>
+                <div class="animate-pulse bg-slate-200 h-24 rounded-2xl"></div>
+                <div class="animate-pulse bg-slate-200 h-24 rounded-2xl"></div>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+                
                 <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h3 class="font-bold text-lg mb-6">Últimos Membros Cadastrados</h3>
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-bold text-lg text-slate-800">Últimos Membros</h3>
+                        <a href="members.html" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">Ver todos</a>
+                    </div>
+                    
                     <div id="recent-members-list" class="space-y-4">
-                        <p class="text-slate-400 text-sm">Sincronizando com o servidor...</p>
+                        <p class="text-slate-400 text-sm italic">Carregando dados...</p>
                     </div>
                 </div>
-                <div class="bg-indigo-900 text-white p-6 rounded-2xl flex flex-col justify-between shadow-xl">
+
+                <div class="bg-indigo-900 text-white p-6 rounded-2xl flex flex-col justify-between shadow-xl shadow-indigo-900/20">
                     <div>
-                        <h3 class="font-bold text-lg mb-4">Novo Membro?</h3>
-                        <p class="text-indigo-200 text-sm mb-6">Mantenha os registros atualizados para uma melhor gestão da sua congregação.</p>
+                        <h3 class="font-bold text-lg mb-2">Novo Visitante?</h3>
+                        <p class="text-indigo-200 text-sm mb-6 leading-relaxed">
+                            Mantenha o cadastro atualizado para integrar novos membros aos ministérios.
+                        </p>
                     </div>
-                    <a href="novomembro.html" class="w-full py-3 bg-white text-indigo-900 rounded-xl font-bold hover:bg-indigo-50 transition-colors text-center shadow-lg">Cadastrar Agora</a>
+                    <a href="novomembro.html" class="w-full py-3 bg-white text-indigo-900 rounded-xl font-bold hover:bg-indigo-50 transition-colors text-center shadow-lg flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Cadastrar Agora
+                    </a>
                 </div>
             </div>
         </div>
     </main>
+
     <script type="module" src="index.js"></script>
 </body>
 </html>

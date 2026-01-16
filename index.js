@@ -151,6 +151,24 @@ function injectCommonUI() {
     }
 }
 
+// Função Global para Abrir/Fechar Menu
+window.toggleMenu = () => {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobile-overlay');
+    
+    isMobileMenuOpen = !isMobileMenuOpen;
+
+    if (isMobileMenuOpen) {
+        // Abrir: Remove a translação negativa (traz pra tela) e mostra overlay
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+    } else {
+        // Fechar: Joga pra fora da tela e esconde overlay
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+    }
+};
+
 // Renderização do Dashboard
 function renderDashboard() {
     const statCards = document.getElementById('stat-cards');
