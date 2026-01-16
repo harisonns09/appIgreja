@@ -22,8 +22,8 @@ const api = {
         } catch (error) {
             console.warn("Backend offline ou erro na conexão. Usando dados fictícios.");
             state.members = [
-                { id: '1', nome: 'Membro Exemplo 1', ministerio: 'Louvor', membroStatus: 'Membro', email: 'exemplo1@email.com' },
-                { id: '2', nome: 'Membro Exemplo 2', ministerio: 'Infantil', membroStatus: 'Líder', email: 'exemplo2@email.com' }
+                { id: '1', nome: 'Membro Exemplo 1', ministerio: 'Louvor', status: 'Membro', email: 'exemplo1@email.com' },
+                { id: '2', nome: 'Membro Exemplo 2', ministerio: 'Infantil', status: 'Líder', email: 'exemplo2@email.com' }
             ];
         } finally {
             state.isLoading = false;
@@ -118,7 +118,7 @@ function renderDashboard() {
     if (statCards) {
         statCards.innerHTML = `
             ${createStatCard('Total de Membros', state.members.length)}
-            ${createStatCard('Ativos no Sistema', state.members.filter(m => m.membroStatus !== 'Visitante').length)}
+            ${createStatCard('Ativos no Sistema', state.members.filter(m => m.status !== 'Visitante').length)}
             ${createStatCard('Ministérios Ativos', 4)}
             ${createStatCard('Visitantes Recentes', 0)}
         `;
@@ -136,7 +136,7 @@ function renderDashboard() {
                         <p class="text-[10px] text-slate-400 uppercase tracking-wider">${m.ministerio}</p>
                     </div>
                 </div>
-                <span class="text-[10px] font-bold px-2 py-1 rounded bg-slate-100 text-slate-600 uppercase">${m.membroStatus}</span>
+                <span class="text-[10px] font-bold px-2 py-1 rounded bg-slate-100 text-slate-600 uppercase">${m.status}</span>
             </div>
         `).join('') : '<p class="text-center text-slate-400 py-8 italic">Nenhum membro encontrado.</p>';
     }
@@ -164,8 +164,8 @@ function renderMembersList(query = '') {
             </td>
             <td class="px-6 py-4 text-slate-600">${m.ministerio}</td>
             <td class="px-6 py-4">
-                <span class="px-2 py-1 rounded-full text-[10px] font-black uppercase ${m.membroStatus === 'Líder' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}">
-                    ${m.membroStatus}
+                <span class="px-2 py-1 rounded-full text-[10px] font-black uppercase ${m.status === 'Líder' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}">
+                    ${m.status}
                 </span>
             </td>
             <td class="px-6 py-4 text-right">
@@ -185,14 +185,25 @@ function setupForm() {
     form.onsubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData(form);
-        const memberData = Object.fromEntries(formData.entries());
+        
+        // Mapeamento manual para garantir que o JSON combine com a classe Pessoa.java
+        const memberData = {
+            nome: formData.get('nome'),
+            dataNascimento: formData.get('dataNascimento'), // HTML YYYY-MM-DD bate com o Java
+            email: formData.get('email'),
+            telefone: formData.get('telefone'),
+            ministerio: formData.get('ministerio'),
+            status: formData.get('status') // Aceita os dois nomes
+        };
+
+        console.log("Enviando para o Java:", memberData); // Debug para você ver o que está saindo
 
         const success = await api.saveMember(memberData);
         if (success) {
-            alert("Membro cadastrado com sucesso no banco de dados!");
+            alert("Membro cadastrado com sucesso!");
             window.location.href = 'members.html';
         } else {
-            alert("Erro ao salvar. Verifique se o servidor Java está rodando.");
+            alert("Erro ao salvar. Verifique o console do Java para detalhes (F12 no navegador também).");
         }
     };
 }
@@ -235,7 +246,7 @@ async function init() {
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     if (currentPage === 'index.html') renderDashboard();
     else if (currentPage === 'members.html') renderMembersList();
-    else if (currentPage === 'add-member.html') setupForm();
+    else if (currentPage === 'novomembro.html') setupForm();
 }
 
 document.addEventListener('DOMContentLoaded', init);
