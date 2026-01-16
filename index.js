@@ -90,26 +90,36 @@ function injectCommonUI() {
     const headerContainer = document.getElementById('header-container');
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
+    // 1. SIDEBAR (Agora com lógica Mobile/Desktop)
     if (sidebarContainer) {
         sidebarContainer.innerHTML = `
-            <aside class="w-64 bg-indigo-900 text-white flex flex-col h-full shadow-2xl">
-                <div class="p-8 flex items-center gap-3">
-                    <div class="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shrink-0 shadow-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#312e81" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <div id="mobile-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden glass transition-opacity"></div>
+
+            <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-64 bg-indigo-900 text-white flex flex-col h-full shadow-2xl transform -translate-x-full md:translate-x-0 md:relative transition-transform duration-300 ease-in-out">
+                <div class="p-6 md:p-8 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shrink-0 shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#312e81" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <h1 class="text-2xl font-black tracking-tighter">Eclésia</h1>
                     </div>
-                    <h1 class="text-2xl font-black tracking-tighter">Eclésia</h1>
+                    <button onclick="toggleMenu()" class="md:hidden text-indigo-300 hover:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
                 </div>
-                <nav class="flex-1 mt-4 px-4 space-y-2">
+
+                <nav class="flex-1 mt-2 px-4 space-y-2 overflow-y-auto">
                     <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${currentPage === 'index.html' ? 'bg-indigo-800 text-white shadow-md' : 'text-indigo-200 hover:bg-indigo-800/50'}">Dashboard</a>
                     <a href="members.html" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${currentPage === 'members.html' ? 'bg-indigo-800 text-white shadow-md' : 'text-indigo-200 hover:bg-indigo-800/50'}">Membros</a>
-                    <a href="novomembro.html" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${currentPage === 'add-member.html' ? 'bg-indigo-800 text-white shadow-md' : 'text-indigo-200 hover:bg-indigo-800/50'}">Cadastrar</a>
+                    <a href="novomembro.html" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${currentPage === 'novomembro.html' ? 'bg-indigo-800 text-white shadow-md' : 'text-indigo-200 hover:bg-indigo-800/50'}">Cadastrar</a>
                 </nav>
-                <div class="p-6 border-t border-indigo-800/50">
+
+                <div class="p-6 border-t border-indigo-800/50 mt-auto">
                     <div class="flex items-center gap-3 px-2">
                         <div class="w-8 h-8 rounded-full bg-indigo-700 flex items-center justify-center text-[10px] font-bold">ADM</div>
                         <div class="overflow-hidden">
                             <p class="text-xs font-bold truncate">Administrador</p>
-                            <p class="text-[10px] text-indigo-400">Versão 1.0</p>
+                            <p class="text-[10px] text-indigo-400">Online</p>
                         </div>
                     </div>
                 </div>
@@ -117,18 +127,22 @@ function injectCommonUI() {
         `;
     }
 
+    // 2. HEADER (Com botão Menu Mobile)
     if (headerContainer) {
-        const titles = { 
-            'index.html': 'Visão Geral', 
-            'members.html': 'Lista de Membros', 
-            'novomembro.html': 'Novo Registro' 
-        };
+        const titles = { 'index.html': 'Visão Geral', 'members.html': 'Lista de Membros', 'novomembro.html': 'Novo Registro', 'editarmembro.html': 'Editar Registro' };
+        const pageTitle = Object.keys(titles).find(k => currentPage.includes(k)) ? titles[Object.keys(titles).find(k => currentPage.includes(k))] : 'Eclésia';
+
         headerContainer.innerHTML = `
-            <header class="bg-white border-b px-8 py-5 flex items-center justify-between shadow-sm sticky top-0 z-10">
-                <h2 class="text-xl font-extrabold text-slate-800">${titles[currentPage] || 'Eclésia'}</h2>
+            <header class="bg-white border-b px-4 md:px-8 py-4 flex items-center justify-between shadow-sm sticky top-0 z-10">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleMenu()" class="md:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <h2 class="text-lg md:text-xl font-extrabold text-slate-800 truncate">${pageTitle}</h2>
+                </div>
+                
                 <div class="flex items-center gap-4">
-                    <div class="relative group">
-                        <input type="text" id="global-search" placeholder="Pesquisar..." class="pl-10 pr-4 py-2 bg-slate-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all w-48 focus:w-64" oninput="window.handleSearch(this.value)">
+                    <div class="relative group hidden md:block"> <input type="text" placeholder="Pesquisar..." class="pl-10 pr-4 py-2 bg-slate-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all w-32 focus:w-64" oninput="window.handleSearch(this.value)">
                         <svg class="absolute left-3 top-2.5 text-slate-400" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                     </div>
                 </div>
