@@ -1,6 +1,7 @@
 
 // Configuração do Backend Java
-const API_BASE_URL = 'http://localhost:8080/api';
+//const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = 'https://gen-lang-client-0788356664.rj.r.appspot.com/api';
 
 const state = {
     members: [],
@@ -46,12 +47,38 @@ const api = {
 
     async deleteMember(id) {
         try {
-            const response = await fetch(`${API_BASE_URL}/membros/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/membro/${id}`, {
                 method: 'DELETE'
             });
             return response.ok;
         } catch (error) {
             console.error("Erro ao excluir:", error);
+            return false;
+        }
+    },
+
+    async getMemberById(id) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/membro/${id}`);
+            
+            if (response.ok) return await response.json();
+            throw new Error("Membro não encontrado");
+        } catch (error) {
+            console.error("Erro ao buscar membro:", error);
+            return null;
+        }
+    },
+
+    async updateMember(id, memberData) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/membro/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(memberData)
+            });
+            return response.ok;
+        } catch (error) {
+            console.error("Erro ao atualizar:", error);
             return false;
         }
     }
@@ -168,7 +195,11 @@ function renderMembersList(query = '') {
                     ${m.status}
                 </span>
             </td>
-            <td class="px-6 py-4 text-right">
+            <td class="px-6 py-4 text-right flex justify-end gap-3">
+                <a href="pessoa.html?id=${m.id}" class="text-indigo-400 hover:text-indigo-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                </a>
+
                 <button onclick="window.confirmDelete('${m.id}')" class="text-red-400 hover:text-red-600 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                 </button>
@@ -218,6 +249,8 @@ function createStatCard(title, value) {
     `;
 }
 
+
+
 // Eventos Globais expostos ao Window
 window.handleSearch = (q) => {
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
@@ -230,23 +263,84 @@ window.confirmDelete = async (id) => {
     if (confirm("Tem certeza que deseja excluir este registro do banco de dados?")) {
         const ok = await api.deleteMember(id);
         if (ok) {
-            state.members = state.members.filter(m => m.id !== id);
-            renderMembersList();
+            await api.fetchMembers();           
+            renderMembersList(); 
+            
+            alert("Registro excluído com sucesso!");
         } else {
             alert("Não foi possível excluir o membro.");
         }
     }
 };
 
+
+
 // Inicialização Principal
 async function init() {
     injectCommonUI();
-    await api.fetchMembers();
     
+    // Verifica qual página está aberta
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    if (currentPage === 'index.html') renderDashboard();
-    else if (currentPage === 'members.html') renderMembersList();
-    else if (currentPage === 'novomembro.html') setupForm();
+
+    if (currentPage === 'index.html') {
+        await api.fetchMembers();
+        renderDashboard();
+    } 
+    else if (currentPage === 'members.html') {
+        await api.fetchMembers();
+        renderMembersList();
+    } 
+    else if (currentPage === 'novomembro.html') {
+        setupForm();
+    }
+    // NOVA LINHA AQUI:
+    else if (currentPage.includes('pessoa.html')) {
+        setupEditForm();
+    }
+}
+
+//Carregamento e edicao de membro
+async function setupEditForm() {
+    const form = document.getElementById('edit-member-form');
+    if (!form) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+
+    if (!id) {
+        alert("ID não fornecido!");
+        window.location.href = 'members.html';
+        return;
+    }
+
+    const member = await api.getMemberById(id);
+    if (!member) {
+        alert("Erro ao carregar dados do membro.");
+        return;
+    }
+
+    // Preenche o formulário automaticamente
+    // (O nome dos inputs no HTML deve ser igual às chaves do JSON)
+    Object.keys(member).forEach(key => {
+        if (form.elements[key]) {
+            form.elements[key].value = member[key];
+        }
+    });
+
+
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const dataToUpdate = Object.fromEntries(formData.entries());
+
+        const success = await api.updateMember(id, dataToUpdate);
+        if (success) {
+            alert("Dados atualizados com sucesso!");
+            window.location.href = 'members.html';
+        } else {
+            alert("Erro ao atualizar.");
+        }
+    };
 }
 
 document.addEventListener('DOMContentLoaded', init);
