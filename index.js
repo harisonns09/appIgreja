@@ -84,16 +84,18 @@ const api = {
     }
 };
 
-// Injeção de UI Comum
+// Variável de controle
+let isMobileMenuOpen = false;
+
 function injectCommonUI() {
     const sidebarContainer = document.getElementById('sidebar-container');
     const headerContainer = document.getElementById('header-container');
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
-    // 1. SIDEBAR (Agora com lógica Mobile/Desktop)
+    // 1. SIDEBAR (Tailwind - Com lógica de deslizar)
     if (sidebarContainer) {
         sidebarContainer.innerHTML = `
-            <div id="mobile-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden glass transition-opacity"></div>
+            <div id="mobile-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden transition-opacity"></div>
 
             <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-64 bg-indigo-900 text-white flex flex-col h-full shadow-2xl transform -translate-x-full md:translate-x-0 md:relative transition-transform duration-300 ease-in-out">
                 <div class="p-6 md:p-8 flex items-center justify-between gap-3">
@@ -127,7 +129,7 @@ function injectCommonUI() {
         `;
     }
 
-    // 2. HEADER (Com botão Menu Mobile)
+    // 2. HEADER (Tailwind - Com botão hambúrguer)
     if (headerContainer) {
         const titles = { 'index.html': 'Visão Geral', 'members.html': 'Lista de Membros', 'novomembro.html': 'Novo Registro', 'editarmembro.html': 'Editar Registro' };
         const pageTitle = Object.keys(titles).find(k => currentPage.includes(k)) ? titles[Object.keys(titles).find(k => currentPage.includes(k))] : 'Eclésia';
@@ -140,30 +142,20 @@ function injectCommonUI() {
                     </button>
                     <h2 class="text-lg md:text-xl font-extrabold text-slate-800 truncate">${pageTitle}</h2>
                 </div>
-                
-                <div class="flex items-center gap-4">
-                    <div class="relative group hidden md:block"> <input type="text" placeholder="Pesquisar..." class="pl-10 pr-4 py-2 bg-slate-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all w-32 focus:w-64" oninput="window.handleSearch(this.value)">
-                        <svg class="absolute left-3 top-2.5 text-slate-400" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    </div>
-                </div>
-            </header>
+                </header>
         `;
     }
 }
 
-// Função Global para Abrir/Fechar Menu
+// Função para animar o menu
 window.toggleMenu = () => {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('mobile-overlay');
-    
     isMobileMenuOpen = !isMobileMenuOpen;
-
     if (isMobileMenuOpen) {
-        // Abrir: Remove a translação negativa (traz pra tela) e mostra overlay
         sidebar.classList.remove('-translate-x-full');
         overlay.classList.remove('hidden');
     } else {
-        // Fechar: Joga pra fora da tela e esconde overlay
         sidebar.classList.add('-translate-x-full');
         overlay.classList.add('hidden');
     }
