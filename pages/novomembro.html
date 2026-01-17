@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eclésia - Editar</title>
+    <title>Eclésia - Cadastro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -13,17 +14,11 @@
         <div id="header-container"></div>
         <div class="p-8">
             <div class="max-w-xl mx-auto bg-white p-8 rounded-3xl shadow-sm border">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold">Editar Pessoa</h3>
-                    <a href="members.html" class="text-sm text-indigo-600 hover:underline">Voltar</a>
-                </div>
-                
-                <form id="edit-member-form" class="space-y-4">
-                    <input type="hidden" name="id">
-
+                <h3 class="text-xl font-bold mb-6">Formulário de Cadastro</h3>
+                <form id="add-member-form" class="space-y-4">
                     <div class="space-y-1">
                         <label class="text-xs font-bold text-slate-500 uppercase">Nome Completo</label>
-                        <input name="nome" required class="w-full px-4 py-3 border rounded-xl outline-indigo-500 bg-slate-50">
+                        <input name="nome" required placeholder="Ex: João da Silva" class="w-full px-4 py-3 border rounded-xl outline-indigo-500 bg-slate-50">
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-1">
@@ -32,12 +27,12 @@
                         </div>
                         <div class="space-y-1">
                             <label class="text-xs font-bold text-slate-500 uppercase">Telefone</label>
-                            <input name="telefone" required class="w-full px-4 py-3 border rounded-xl bg-slate-50 outline-indigo-500">
+                            <input name="telefone" required placeholder="(00) 00000-0000" class="w-full px-4 py-3 border rounded-xl bg-slate-50 outline-indigo-500">
                         </div>
                     </div>
                     <div class="space-y-1">
                         <label class="text-xs font-bold text-slate-500 uppercase">E-mail</label>
-                        <input name="email" type="email" required class="w-full px-4 py-3 border rounded-xl bg-slate-50 outline-indigo-500">
+                        <input name="email" type="email" required placeholder="exemplo@email.com" class="w-full px-4 py-3 border rounded-xl bg-slate-50 outline-indigo-500">
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-1">
@@ -60,12 +55,12 @@
                         </div>
                     </div>
                     <button type="submit" class="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 mt-4">
-                        Atualizar Dados
+                        Salvar
                     </button>
                 </form>
             </div>
         </div>
     </main>
-    <script type="module" src="index.js"></script>
+    <script type="module" src="../index.js"></script>
 </body>
 </html>
