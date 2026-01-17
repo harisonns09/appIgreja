@@ -3,8 +3,8 @@
 // ==========================================
 
 // Alternar entre Local e Produção conforme necessário
-// const API_BASE_URL = 'http://localhost:8080/api'; 
-const API_BASE_URL = 'https://gen-lang-client-0788356664.rj.r.appspot.com/api';
+// export const API_BASE_URL = 'http://localhost:8080/api'; 
+export const API_BASE_URL = 'https://gen-lang-client-0788356664.rj.r.appspot.com/api';
 
 const state = {
     members: [],
@@ -29,7 +29,7 @@ const PATH_TO_PAGES = isPagesFolder ? './' : './pages/';
 // ==========================================
 // API - COMUNICAÇÃO COM BACKEND
 // ==========================================
-const api = {
+export const api = {
     async fetchMembers() {
         state.isLoading = true;
         try {
@@ -96,6 +96,20 @@ const api = {
             return response.ok;
         } catch (error) {
             console.error("Erro ao atualizar:", error);
+            return false;
+        }
+    },
+
+    async saveMinistry(ministryData) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/ministerios`, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(ministryData)
+            });
+            return response.ok;
+        } catch (error) {
+            console.error("Erro ao salvar ministério:", error);
             return false;
         }
     }
