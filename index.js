@@ -3,8 +3,8 @@
 // ==========================================
 
 // Alternar entre Local e Produção conforme necessário
-// export const API_BASE_URL = 'http://localhost:8080/api'; 
-export const API_BASE_URL = 'https://gen-lang-client-0788356664.rj.r.appspot.com/api';
+export const API_BASE_URL = 'http://localhost:8080/api'; 
+// export const API_BASE_URL = 'https://gen-lang-client-0788356664.rj.r.appspot.com/api';
 
 const state = {
     members: [],
@@ -41,9 +41,7 @@ export const api = {
             }
         } catch (error) {
             console.warn("Backend offline ou erro. Usando dados fictícios.");
-            state.members = [
-                { id: '1', nome: 'Membro Teste', ministerio: 'Louvor', status: 'Membro', email: 'teste@email.com' }
-            ];
+            
         } finally {
             state.isLoading = false;
         }
@@ -291,32 +289,6 @@ function createStatCard(title, value) {
 // LÓGICA DE FORMULÁRIOS
 // ==========================================
 
-function setupForm() {
-    const form = document.getElementById('add-member-form');
-    if (!form) return;
-
-    form.onsubmit = async (e) => {
-        e.preventDefault();
-        const formData = new FormData(form);
-        const memberData = {
-            nome: formData.get('nome'),
-            dataNascimento: formData.get('dataNascimento'),
-            email: formData.get('email'),
-            telefone: formData.get('telefone'),
-            ministerio: formData.get('ministerio'),
-            status: formData.get('status')
-        };
-
-        const success = await api.saveMember(memberData);
-        if (success) {
-            alert("Membro cadastrado com sucesso!");
-            window.location.href = 'members.html';
-        } else {
-            alert("Erro ao salvar.");
-        }
-    };
-}
-
 async function setupEditForm() {
     const form = document.getElementById('edit-member-form'); // O ID deve ser este no HTML
     if (!form) return;
@@ -405,6 +377,25 @@ async function init() {
         // await api.fetchMinisterios();
         // renderMinisterios();
     }
+}
+
+window.mascaraCPF = function(input) {
+    let value = input.value;
+    
+    // 1. Remove tudo que não é número
+    value = value.replace(/\D/g, "");
+
+    // 2. Adiciona o primeiro ponto (após o 3º dígito)
+    value = value.replace(/(\d{3})(\d)/, "$1.$2");
+
+    // 3. Adiciona o segundo ponto (após o 6º dígito)
+    value = value.replace(/(\d{3})(\d)/, "$1.$2");
+
+    // 4. Adiciona o traço (após o 9º dígito)
+    value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+
+    // 5. Atualiza o valor no campo
+    input.value = value;
 }
 
 document.addEventListener('DOMContentLoaded', init);
