@@ -285,49 +285,6 @@ function createStatCard(title, value) {
     `;
 }
 
-// ==========================================
-// LÓGICA DE FORMULÁRIOS
-// ==========================================
-
-async function setupEditForm() {
-    const form = document.getElementById('edit-member-form'); // O ID deve ser este no HTML
-    if (!form) return;
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
-
-    if (!id) {
-        alert("ID não fornecido!");
-        window.location.href = 'members.html';
-        return;
-    }
-
-    const member = await api.getMemberById(id);
-    if (!member) {
-        alert("Erro ao carregar dados.");
-        return;
-    }
-
-    Object.keys(member).forEach(key => {
-        if (form.elements[key]) {
-            form.elements[key].value = member[key];
-        }
-    });
-
-    form.onsubmit = async (e) => {
-        e.preventDefault();
-        const formData = new FormData(form);
-        const dataToUpdate = Object.fromEntries(formData.entries());
-
-        const success = await api.updateMember(id, dataToUpdate);
-        if (success) {
-            alert("Dados atualizados com sucesso!");
-            window.location.href = 'members.html';
-        } else {
-            alert("Erro ao atualizar.");
-        }
-    };
-}
 
 // ==========================================
 // INICIALIZAÇÃO E EVENTOS
@@ -366,17 +323,7 @@ async function init() {
         await api.fetchMembers();
         renderMembersList();
     } 
-    else if (currentPage === 'novomembro.html') {
-        setupForm();
-    }
-    else if (currentPage === 'pessoa.html') {
-        setupEditForm();
-    }
-    // Adicionei isso caso queira carregar dados em Ministerios no futuro
-    else if (currentPage === 'ministerios.html') {
-        // await api.fetchMinisterios();
-        // renderMinisterios();
-    }
+    
 }
 
 window.mascaraCPF = function(input) {
