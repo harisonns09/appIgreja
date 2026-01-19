@@ -222,7 +222,7 @@ function renderDashboard() {
     }
 
     if (recentList) {
-        recentList.innerHTML = state.members.length ? state.members.slice(0, 5).map(m => `
+        recentList.innerHTML = state.members.length ? state.members.slice(0, 2).map(m => `
             <div class="flex items-center justify-between p-4 border rounded-xl hover:bg-slate-50 transition-colors">
                 <div class="flex items-center gap-4">
                     <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs uppercase">
