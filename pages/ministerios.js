@@ -4,8 +4,14 @@ import { API_BASE_URL } from '../index.js';
 // 1. EXPORTAMOS A API PARA OUTROS ARQUIVOS USAREM
 export const apiMinisterio = {
     async carregarMinisterios() {
+        const token = localStorage.getItem('auth_token'); 
+
         try {
-            const response = await fetch(`${API_BASE_URL}/ministerios`);
+            const response = await fetch(`${API_BASE_URL}/ministerios`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (response.ok) return await response.json();
             throw new Error("Erro na resposta");
         } catch (error) {
@@ -15,11 +21,29 @@ export const apiMinisterio = {
     },
     
     async salvar(dados) {
+        const token = localStorage.getItem('auth_token'); 
+
         try {
             const response = await fetch(`${API_BASE_URL}/ministerios`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify(dados)
+            });
+            return response.ok;
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+    },
+
+    async excluir(id) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/ministerio/${id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
             });
             return response.ok;
         } catch (error) {
@@ -82,8 +106,23 @@ async function carregarListaNaTabela() {
             <td class="px-6 py-4 font-bold text-slate-800">${m.nome}</td>
             <td class="px-6 py-4 text-slate-600">${m.responsavel || '-'}</td>
             <td class="px-6 py-4 text-right">
-                <button onclick="alert('Implementar exclusão')" class="text-red-500 hover:text-red-700">Excluir</button>
+                <button onclick="window.deletarMinisterio(${m.id})" class="text-red-500 hover:text-red-700 font-medium transition-colors">
+                    Excluir
+                </button>
             </td>
         </tr>
     `).join('');
+
 }
+
+window.deletarMinisterio = async (id) => {
+    if (confirm("Tem certeza que deseja excluir este ministério?")) {
+        const sucesso = await apiMinisterio.excluir(id);
+        if (sucesso) {
+            alert("Ministério excluído com sucesso!");
+            carregarListaNaTabela();
+        } else {
+            alert("Erro ao excluir o ministério.");
+        }
+    }
+};

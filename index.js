@@ -3,11 +3,12 @@
 // ==========================================
 
 // Alternar entre Local e Produção conforme necessário
-export const API_BASE_URL = 'http://localhost:8080/api'; 
-// export const API_BASE_URL = 'https://gen-lang-client-0788356664.rj.r.appspot.com/api';
+//export const API_BASE_URL = 'http://localhost:8080/api'; 
+export const API_BASE_URL = 'https://gen-lang-client-0788356664.rj.r.appspot.com/api';
 
 const state = {
     members: [],
+    ministerios: [],
     searchQuery: '',
     isLoading: false
 };
@@ -26,6 +27,30 @@ const PATH_TO_ROOT = isPagesFolder ? '../' : './';
 const PATH_TO_PAGES = isPagesFolder ? './' : './pages/';
 
 
+// --- Gerar Cabeçalhos com Token ---
+function getAuthHeaders() {
+    const token = localStorage.getItem('auth_token');
+
+    // Se não tiver token, manda para o login (proteção de rota)
+    if (!token && !window.location.pathname.includes('login.html')) {
+        // Ajuste o caminho dependendo de onde o script roda
+        const loginPath = window.location.pathname.includes('/pages/') ? 'login.html' : 'pages/login.html';
+        window.location.href = loginPath;
+        return {};
+    }
+
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // O padrão Bearer é essencial
+    };
+}
+
+window.logout = function () {
+    localStorage.removeItem('auth_token');
+    const loginPath = window.location.pathname.includes('/pages/') ? 'login.html' : 'pages/login.html';
+    window.location.href = loginPath;
+}
+
 // ==========================================
 // API - COMUNICAÇÃO COM BACKEND
 // ==========================================
@@ -33,15 +58,39 @@ export const api = {
     async fetchMembers() {
         state.isLoading = true;
         try {
-            const response = await fetch(`${API_BASE_URL}/membros`);
+            // ADICIONAR headers: getAuthHeaders()
+            const response = await fetch(`${API_BASE_URL}/membros`, {
+                headers: getAuthHeaders()
+            });
+
+            // Se o token expirou (Backend devolve 403)
+            if (response.status === 403) {
+                window.logout();
+                return;
+            }
+
             if (response.ok) {
                 state.members = await response.json();
+            }
+        } catch (error) {
+            console.warn("Erro ao buscar membros", error);
+        } finally {
+            state.isLoading = false;
+        }
+    },
+
+    async fetchMinisterios() {
+        state.isLoading = true;
+        try {
+            const response = await fetch(`${API_BASE_URL}/ministerios`);
+            if (response.ok) {
+                state.ministerios = await response.json();
             } else {
                 throw new Error("Erro na resposta do servidor");
             }
         } catch (error) {
-            console.warn("Backend offline ou erro. Usando dados fictícios.");
-            
+            console.warn("Erro ao carregar ministérios:");
+
         } finally {
             state.isLoading = false;
         }
@@ -51,7 +100,7 @@ export const api = {
         try {
             const response = await fetch(`${API_BASE_URL}/membros`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getAuthHeaders(),
                 body: JSON.stringify(memberData)
             });
             return response.ok;
@@ -64,7 +113,8 @@ export const api = {
     async deleteMember(id) {
         try {
             const response = await fetch(`${API_BASE_URL}/membro/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: getAuthHeaders(),
             });
             return response.ok;
         } catch (error) {
@@ -100,7 +150,7 @@ export const api = {
 
     async saveMinistry(ministryData) {
         try {
-            const response = await fetch(`${API_BASE_URL}/ministerios`, { 
+            const response = await fetch(`${API_BASE_URL}/ministerios`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(ministryData)
@@ -167,12 +217,12 @@ function injectCommonUI() {
     }
 
     if (headerContainer) {
-        const titles = { 
-            'index.html': 'Visão Geral', 
-            'members.html': 'Gestão de Membros', 
+        const titles = {
+            'index.html': 'Visão Geral',
+            'members.html': 'Gestão de Membros',
             'novomembro.html': 'Novo Membro',
             'pessoa.html': 'Editar Membro',
-            'ministerios.html': 'Ministérios e Grupos' 
+            'ministerios.html': 'Ministérios e Grupos'
         };
         const pageKey = Object.keys(titles).find(k => currentPage.includes(k)) || 'index.html';
         const pageTitle = titles[pageKey] || 'Eclésia';
@@ -211,12 +261,12 @@ window.toggleMenu = () => {
 function renderDashboard() {
     const statCards = document.getElementById('stat-cards');
     const recentList = document.getElementById('recent-members-list');
-    
+
     if (statCards) {
         statCards.innerHTML = `
             ${createStatCard('Total de Membros', state.members.length)}
             ${createStatCard('Ativos', state.members.filter(m => m.status !== 'Visitante').length)}
-            ${createStatCard('Ministérios', 4)}
+            ${createStatCard('Ministérios', state.ministerios.length)}
             ${createStatCard('Visitantes', 0)}
         `;
     }
@@ -311,24 +361,25 @@ window.confirmDelete = async (id) => {
 
 async function init() {
     injectCommonUI();
-    
+
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
     // Roteamento Simples
     if (currentPage === 'index.html') {
         await api.fetchMembers();
+        await api.fetchMinisterios();
         renderDashboard();
-    } 
+    }
     else if (currentPage === 'members.html') {
         await api.fetchMembers();
         renderMembersList();
-    } 
-    
+    }
+
 }
 
-window.mascaraCPF = function(input) {
+window.mascaraCPF = function (input) {
     let value = input.value;
-    
+
     // 1. Remove tudo que não é número
     value = value.replace(/\D/g, "");
 
