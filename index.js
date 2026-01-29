@@ -2,8 +2,9 @@
 // CONFIGURAÇÃO E ESTADO
 // ==========================================
 
-//export const API_BASE_URL = 'http://localhost:8080/api'; 
-export const API_BASE_URL = 'https://gen-lang-client-0788356664.rj.r.appspot.com/api';
+export const API_BASE_URL = 'http://localhost:8080/api'; 
+//export const API_BASE_URL = 'https://gen-lang-client-0788356664.rj.r.appspot.com/api';
+import './style.css';
 
 
 const state = {
