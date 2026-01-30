@@ -1,19 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eclésia - Membros</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-slate-50 text-slate-900 h-screen overflow-hidden flex">
+<body class="page-container">
+    
     <div id="sidebar-container"></div>
-    <main class="flex-1 overflow-y-auto flex flex-col">
+
+    <main class="content-area">
         <div id="header-container"></div>
+        
         <div class="p-4 md:p-8">
-            <div class="bg-white rounded-3xl shadow-sm border overflow-hidden">
+            <div class="card-panel">
                 
                 <div class="p-6 border-b flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
@@ -21,29 +21,30 @@
                         <p class="text-sm text-slate-500">Gerencie os registros da congregação</p>
                     </div>
                     
-                    <a href="novomembro.html" class="flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100">
+                    <a href="membro.html" class="btn-action">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                         Novo Membro
                     </a>
                 </div>
 
-                <div class="overflow-x-auto w-full"> 
-                    <table class="w-full text-left border-collapse min-w-[600px]">
+                <div class="overflow-x-auto"> 
+                    <table class="table-std">
                         <thead>
-                            <tr class="bg-slate-50 border-b text-slate-500 text-xs uppercase tracking-wider">
-                                <th class="px-6 py-4 font-bold">Membro</th>
-                                <th class="px-6 py-4 font-bold">Ministério</th>
-                                <th class="px-6 py-4 font-bold">Status</th> 
-                                <th class="px-6 py-4 font-bold text-right">Ações</th>
+                            <tr>
+                                <th class="th-std">Membro</th>
+                                <th class="th-std">Ministério</th>
+                                <th class="th-std">Status</th> 
+                                <th class="th-std text-right">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="full-members-list" class="divide-y divide-slate-100 text-sm">
-                        </tbody>
+                        <tbody id="full-members-list" class="divide-y divide-slate-100">
+                           </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </main>
     <script type="module" src="../index.js"></script>
+    <script type="module" src="./membros.js"></script>
 </body>
 </html>

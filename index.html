@@ -4,20 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADB Jacarepagua - Seja Bem-vindo</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-slate-50 text-slate-900 h-screen overflow-hidden flex">
+<body class="page-container">
     
     <div id="sidebar-container"></div>
 
-    <main class="flex-1 overflow-y-auto flex flex-col">
+    <main class="content-area">
         
         <div id="header-container"></div>
 
         <div class="p-4 md:p-8">
             
-            <div class="bg-indigo-900 rounded-3xl p-8 mb-8 text-white shadow-xl relative overflow-hidden">
+            <div class="dashboard-banner">
                 <div class="relative z-10">
                     <h2 class="text-3xl font-black mb-2">ADB Jacarepagua</h2>
                     <p class="text-indigo-200">Confira nossos próximos cultos e eventos e participe!</p>
@@ -25,25 +23,24 @@
                 <div class="absolute right-0 top-0 h-full w-1/3 bg-white opacity-5 transform skew-x-12 translate-x-12"></div>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="card-panel">
                 <div class="p-6 border-b bg-slate-50 flex justify-between items-center">
                     <h3 class="font-bold text-lg text-slate-800 flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-600"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                         Próximos Eventos
                     </h3>
-                    
-                    </div>
+                </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                    <table class="table-std">
                         <thead>
-                            <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
-                                <th class="px-6 py-4 font-bold">Evento</th>
-                                <th class="px-6 py-4 font-bold">Ministério</th>
-                                <th class="px-6 py-4 font-bold text-center">Inscrição</th>
+                            <tr>
+                                <th class="th-std">Evento</th>
+                                <th class="th-std">Ministério</th>
+                                <th class="th-std text-center">Inscrição</th>
                             </tr>
                         </thead>
-                        <tbody id="dashboard-events-list" class="divide-y divide-slate-100 text-sm">
+                        <tbody id="dashboard-events-list" class="divide-y divide-slate-100">
                             <tr><td colspan="3" class="p-8 text-center text-slate-400">Carregando agenda...</td></tr>
                         </tbody>
                     </table>

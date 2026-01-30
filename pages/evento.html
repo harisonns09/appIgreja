@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eclésia - Eventos</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-slate-50 text-slate-900 h-screen overflow-hidden flex">
+
+<body class="page-container">
     <div id="sidebar-container"></div>
-    <main class="flex-1 overflow-y-auto flex flex-col">
+
+    <main class="content-area">
         <div id="header-container"></div>
+
         <div class="p-8">
-            <div class="max-w-xl mx-auto bg-white p-8 rounded-3xl shadow-sm border">
-                
+            <div class="max-w-xl mx-auto card-std">
+
                 <div class="flex justify-between items-center mb-6">
-                    <h3 id="form-title" class="text-xl font-bold">Novo Evento</h3>
-                    <a href="eventos.html" class="text-sm text-indigo-600 hover:underline">Voltar</a>
+                    <h3 id="form-title" class="text-xl font-bold text-slate-800">Novo Evento</h3>
+                    <a href="eventos.html" class="text-sm text-indigo-600 hover:underline font-medium">Voltar</a>
                 </div>
 
                 <form id="form-evento" class="space-y-4">
@@ -24,41 +26,65 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-1">
-                            <label class="text-xs font-bold text-slate-500 uppercase">Nome do Evento</label>
-                            <input name="nomeEvento" required placeholder="Ex: Culto de Jovens" class="w-full px-4 py-3 border rounded-xl outline-indigo-500 bg-slate-50">
+                            <label class="label-std">Nome do Evento</label>
+                            <input name="nomeEvento" required placeholder="Ex: Culto de Jovens" class="input-std">
                         </div>
                         <div class="space-y-1">
-                            <label class="text-xs font-bold text-slate-500 uppercase">Ministério Responsável</label>
-                            <select name="ministerioResponsavel" id="select-ministerio" class="w-full px-4 py-3 border rounded-xl bg-slate-50 outline-indigo-500" required>
+                            <label class="label-std">Ministério Responsável</label>
+                            <select name="ministerioResponsavel" id="select-ministerio" class="input-std" required>
                                 <option value="">Carregando...</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-slate-500 uppercase">Descrição</label>
-                            <input name="descricao" required placeholder="Ex: Culto de Jovens" class="w-full px-4 py-3 border rounded-xl outline-indigo-500 bg-slate-50">
-                        </div>                        
+                    <div class="space-y-1">
+                        <label class="label-std">Descrição</label>
+                        <input name="descricao" required placeholder="Detalhes do evento..." class="input-std">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-1">
-                            <label class="text-xs font-bold text-slate-500 uppercase">Data</label>
-                            <input name="dataEvento" type="date" required class="w-full px-4 py-3 border rounded-xl bg-slate-50 outline-indigo-500">
+                            <label class="label-std">Data</label>
+                            <input name="dataEvento" type="date" required class="input-std">
                         </div>
-                        
+                        <div class="space-y-1">
+                            <label class="label-std">Horário</label>
+                            <input name="horario" type="time" required class="input-std">
+                        </div>
                     </div>
-                    
-                    <button type="submit" id="btn-submit" class="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 mt-4">
+
+                    <button type="submit" id="btn-submit" class="btn-primary mt-6">
                         Salvar Evento
                     </button>
                 </form>
+                <div id="container-inscritos" class="mt-10 pt-8 border-t border-slate-100 hidden">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-lg text-slate-800">Pessoas Inscritas</h3>
+                        <span id="contador-inscritos"
+                            class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded-full">0</span>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-slate-500 font-bold uppercase text-xs">
+                                <tr>
+                                    <th class="px-4 py-3">Nome</th>
+                                    <th class="px-4 py-3">Telefone</th>
+                                    <th class="px-4 py-3">Email</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-inscritos" class="divide-y divide-slate-100 bg-white">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    
+                </div>
             </div>
         </div>
     </main>
     <script type="module" src="../index.js"></script>
     <script type="module" src="./eventos.js"></script>
-    <script type="module" src="./ministerios.js"></script>
 </body>
+
 </html>

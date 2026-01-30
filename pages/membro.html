@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eclésia - Membro</title>
+</head>
+<body class="page-container">
+    
+    <div id="sidebar-container"></div>
+
+    <main class="content-area">
+        <div id="header-container"></div>
+        <div class="p-4 md:p-8">
+            <div class="max-w-xl mx-auto card-std">
+                
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h3 id="form-title" class="text-xl font-bold text-slate-800">Novo Membro</h3>
+                        <p id="form-subtitle" class="text-sm text-slate-500">Cadastre um novo integrante.</p>
+                    </div>
+                    <a href="members.html" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium hover:underline">
+                        Voltar para lista
+                    </a>
+                </div>
+
+                <form id="member-form" class="space-y-4">
+                    <input type="hidden" name="id">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="label-std">Nome Completo</label>
+                            <input name="nome" required placeholder="Ex: João da Silva" class="input-std">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="label-std">CPF</label>
+                            <input 
+                                name="cpf" 
+                                id="input-cpf" 
+                                maxlength="14" 
+                                placeholder="000.000.000-00" 
+                                oninput="mascaraCPF(this)"
+                                class="input-std"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="label-std">Data de Nascimento</label>
+                            <input name="dataNascimento" type="date" required class="input-std">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="label-std">Telefone</label>
+                            <input name="telefone" required placeholder="(00) 00000-0000" class="input-std">
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-1">
+                        <label class="label-std">E-mail</label>
+                        <input name="email" type="email" required placeholder="exemplo@email.com" class="input-std">
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="label-std">Ministério</label>
+                            <select name="ministerio" id="listMinisterio" class="input-std">
+                                <option value="">Selecione um ministério</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="label-std">Status</label>
+                            <select name="status" class="input-std">
+                                <option value="Membro">Membro</option>
+                                <option value="Visitante">Visitante</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary mt-6">
+                        <span id="btn-text">Salvar</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <script type="module" src="../index.js"></script>
+    <script type="module" src="./membros.js"></script>
+</body>
+</html>

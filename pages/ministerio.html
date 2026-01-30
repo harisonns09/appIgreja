@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eclésia - Ministério</title>
+</head>
+<body class="page-container">
+    
+    <div id="sidebar-container"></div>
+
+    <main class="content-area">
+        <div id="header-container"></div>
+
+        <div class="p-4 md:p-8">
+            <div class="max-w-2xl mx-auto card-std">
+                
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h3 id="form-title" class="text-xl font-bold text-slate-800">Criar Ministério</h3>
+                        <p id="form-subtitle" class="text-sm text-slate-500">Adicione um novo grupo ou departamento.</p>
+                    </div>
+                    <a href="ministerios.html" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium hover:underline">
+                        Voltar para lista
+                    </a>
+                </div>
+
+                <form id="add-ministry-form" class="space-y-5">
+                    <input type="hidden" name="id">
+
+                    <div class="space-y-1">
+                        <label class="label-std">Nome do Ministério</label>
+                        <input name="nome" required placeholder="Ex: Ministério de Louvor, Diaconia..." class="input-std">
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="label-std">Líder Responsável</label>
+                        <input name="liderResponsavel" required placeholder="Quem lidera este grupo?" class="input-std">
+                    </div>
+
+                    <button type="submit" class="btn-primary mt-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                        <span id="btn-text">Salvar Ministério</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <script type="module" src="../index.js"></script>
+    <script type="module" src="./ministerios.js"></script>
+</body>
+</html>

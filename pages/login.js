@@ -1,4 +1,4 @@
-// pages/login.js
+import '../styles.css'; // Importa o estilo global
 import { API_BASE_URL } from '../index.js';
 
 // 1. Pegamos o formulário
@@ -19,11 +19,8 @@ if (form) {
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
 
-        // O Java espera: { "login": "...", "password": "..." }
-        // Seu HTML já tem name="login" e name="password", então 'data' já está correto.
-
         try {
-            console.log("Tentando login em:", `${API_BASE_URL}/auth/login`);
+            // console.log("Tentando login em:", `${API_BASE_URL}/auth/login`);
 
             const response = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
@@ -43,7 +40,7 @@ if (form) {
                 if (typeof Toastify === 'function') {
                     Toastify({
                         text: "Login realizado com sucesso!",
-                        duration: 3000,
+                        duration: 2000, // Um pouco mais rápido
                         style: { background: "linear-gradient(to right, #00b09b, #96c93d)" }
                     }).showToast();
                 }
@@ -73,8 +70,10 @@ if (form) {
             }
         } finally {
             // Restaura o botão
-            btn.disabled = false;
-            btn.innerText = originalText;
+            if(btn) {
+                btn.disabled = false;
+                btn.innerText = originalText;
+            }
         }
     });
 } else {

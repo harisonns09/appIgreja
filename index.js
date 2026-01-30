@@ -4,12 +4,11 @@
 
 export const API_BASE_URL = 'http://localhost:8080/api'; 
 //export const API_BASE_URL = 'https://gen-lang-client-0788356664.rj.r.appspot.com/api';
-import './style.css';
-
+import './styles.css'; // Importando o CSS centralizado
 
 const state = {
     members: [],
-    eventos: [], // Novo estado para eventos
+    eventos: [], 
     ministerios: [],
     isLoading: false
 };
@@ -60,14 +59,13 @@ function injectCommonUI() {
 
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     const isActive = (pages) => pages.includes(currentPage);
-    const activeClass = 'bg-indigo-800 text-white shadow-md';
-    const inactiveClass = 'text-indigo-200 hover:bg-indigo-800/50 hover:text-white';
+    
+    // Classes para links ativos/inativos usando o padrão do CSS (se possível, ou mantendo aqui para lógica dinâmica)
+    const activeClass = 'sidebar-link-active';
+    const inactiveClass = 'hover:bg-indigo-800/50 hover:text-white'; // Classes adicionais de hover
 
     const isAdminOpen = isActive(['members.html', 'novomembro.html', 'pessoa.html', 'ministerios.html']);
     
-    // Agora o index.html é a página de Eventos principal também
-    const isEventosOpen = isActive(['index.html', '', 'eventos.html', 'inscricao.html']);
-
     if (sidebarContainer) {
         let menuHTML = `
             <div id="mobile-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden transition-opacity"></div>
@@ -81,9 +79,9 @@ function injectCommonUI() {
                     </div>
                     <button onclick="toggleMenu()" class="md:hidden text-indigo-300 hover:text-white">X</button>
                 </div>
-                <nav class="flex-1 mt-2 px-4 space-y-4 overflow-y-auto">
+                <nav class="flex-1 mt-2 px-4 space-y-2 overflow-y-auto">
                     
-                    <a href="${PATH_TO_ROOT}index.html" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-medium text-sm ${isActive(['index.html', '']) ? activeClass : inactiveClass}">
+                    <a href="${PATH_TO_ROOT}index.html" class="sidebar-link ${isActive(['index.html', '']) ? activeClass : inactiveClass}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                         Agenda de Eventos
                     </a>
@@ -92,21 +90,21 @@ function injectCommonUI() {
         // ADMINISTRAÇÃO (SÓ SE LOGADO)
         if (isLoggedIn) {
             menuHTML += `
-                <div>
+                <div class="pt-2">
                     <button onclick="toggleSubmenu('submenu-admin')" class="w-full flex items-center justify-between px-4 py-2 text-xs font-bold text-indigo-400 uppercase tracking-wider hover:text-white transition-colors">
                         <span>Administração</span>
                         <svg id="arrow-submenu-admin" class="transition-transform duration-200 ${isAdminOpen ? 'rotate-180' : ''}" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div id="submenu-admin" class="mt-2 space-y-1 ${isAdminOpen ? '' : 'hidden'}">
-                        <a href="${PATH_TO_PAGES}members.html" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-medium text-sm ${isActive(['members.html', 'novomembro.html', 'pessoa.html']) ? activeClass : inactiveClass}">
+                    <div id="submenu-admin" class="mt-1 space-y-1 ${isAdminOpen ? '' : 'hidden'}">
+                        <a href="${PATH_TO_PAGES}members.html" class="sidebar-link ${isActive(['members.html', 'novomembro.html', 'pessoa.html']) ? activeClass : inactiveClass}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                             Gestão de Membros
                         </a>
-                        <a href="${PATH_TO_PAGES}ministerios.html" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-medium text-sm ${isActive(['ministerios.html', 'novoministerio.html']) ? activeClass : inactiveClass}">
+                        <a href="${PATH_TO_PAGES}ministerios.html" class="sidebar-link ${isActive(['ministerios.html', 'novoministerio.html']) ? activeClass : inactiveClass}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
                             Gestão de Ministérios
                         </a>
-                        <a href="${PATH_TO_PAGES}eventos.html" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-medium text-sm ${isActive(['eventos.html']) ? activeClass : inactiveClass}">
+                        <a href="${PATH_TO_PAGES}eventos.html" class="sidebar-link ${isActive(['eventos.html']) ? activeClass : inactiveClass}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                             Gerenciar Eventos
                         </a>
@@ -128,7 +126,7 @@ function injectCommonUI() {
                 </div>
             `;
         } else {
-            menuHTML += `<a href="${PATH_TO_PAGES}login.html" class="flex items-center justify-center gap-2 w-full py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-sm font-bold transition-colors">Administrativo</a>`;
+            menuHTML += `<a href="${PATH_TO_PAGES}login.html" class="btn-primary py-2 text-sm w-full">Administrativo</a>`;
         }
 
         menuHTML += `</div></aside>`;
@@ -139,6 +137,7 @@ function injectCommonUI() {
         let pageTitle = 'ADB Jacarepagua';
         if (currentPage === 'index.html' || currentPage === '') pageTitle = 'Seja Bem-vindo';
         else if (currentPage === 'members.html') pageTitle = 'Gestão de Membros';
+        else if (currentPage === 'ministerios.html') pageTitle = 'Ministérios';
         
         headerContainer.innerHTML = `
             <header class="bg-white border-b px-4 md:px-8 py-4 flex items-center justify-between shadow-sm sticky top-0 z-10">
@@ -174,7 +173,6 @@ export const api = {
     async fetchEventos() {
         state.isLoading = true;
         try {
-            // Nota: NÃO precisa de Auth Header para GET (configurado no Java)
             const response = await fetch(`${API_BASE_URL}/eventos`);
             if (response.ok) { state.eventos = await response.json(); }
         } catch (error) { console.warn("Erro ao buscar eventos"); }
@@ -183,7 +181,7 @@ export const api = {
 
     async fetchMembers() {
         const token = localStorage.getItem('auth_token');
-        if (!token) { state.members = []; return; } // Segurança Frontend
+        if (!token) { state.members = []; return; } 
 
         state.isLoading = true;
         try {
@@ -201,7 +199,12 @@ export const api = {
         } catch (error) { console.warn("Erro ao carregar ministérios"); }
     },
     
-    async deleteMember(id) { /* ... */ },
+    async deleteMember(id) {
+         try {
+            const response = await fetch(`${API_BASE_URL}/membro/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+            return response.ok;
+        } catch (error) { return false; }
+    },
     async getMemberById(id) { return null; }
 };
 
@@ -209,7 +212,6 @@ export const api = {
 // RENDERIZAÇÃO
 // ==========================================
 
-// Agora renderiza a AGENDA no index
 function renderDashboard() {
     const eventsList = document.getElementById('dashboard-events-list');
 
@@ -219,13 +221,9 @@ function renderDashboard() {
             return;
         }
 
-        // Ordena por data (opcional)
-        // state.eventos.sort((a, b) => new Date(a.dataEvento) - new Date(b.dataEvento));
-
         eventsList.innerHTML = state.eventos.map(evento => `
-            <tr class="hover:bg-indigo-50/50 transition-colors group border-b border-slate-100 last:border-0">
-                <td class="px-6 py-4">
-                    <div class="flex items-center gap-3">
+            <tr class="tr-std hover:bg-indigo-50/50"> <td class="td-std">
+                    <div class="flex items-center gap-4">
                         <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex flex-col items-center justify-center shrink-0 border border-indigo-200">
                             <span class="text-[10px] font-bold uppercase leading-none mt-1">${formatarMes(evento.dataEvento)}</span>
                             <span class="text-lg font-black leading-none">${formatarDia(evento.dataEvento)}</span>
@@ -239,12 +237,12 @@ function renderDashboard() {
                         </div>
                     </div>
                 </td>
-                <td class="px-6 py-4">
+                <td class="td-std">
                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
                         ${evento.ministerioResponsavel || 'Geral'}
                     </span>
                 </td>
-                <td class="px-6 py-4 text-center">
+                <td class="td-std text-center">
                     <a href="${PATH_TO_PAGES}inscricao.html?eventoId=${evento.id}" class="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold uppercase tracking-wide rounded-lg transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
                         Inscrever-se
                     </a>
@@ -278,7 +276,7 @@ function formatarMes(dataString) {
 async function init() {
     injectCommonUI();
 
-    const isDashboard = document.getElementById('dashboard-events-list'); // Novo ID do index
+    const isDashboard = document.getElementById('dashboard-events-list'); 
     const isMembersList = document.getElementById('full-members-list');
 
     // Se estiver no index, carrega EVENTOS
@@ -286,7 +284,7 @@ async function init() {
         await api.fetchEventos();
         renderDashboard();
     } 
-    // Se estiver em membros, carrega MEMBROS (com proteção)
+    // Se estiver em membros, carrega MEMBROS
     else if (isMembersList) {
         await api.fetchMembers();
         if (window.renderMembersList) window.renderMembersList();
@@ -298,5 +296,21 @@ window.handleSearch = (q) => {
         window.renderMembersList(q);
     }
 };
+
+window.confirmDelete = async (id) => {
+    if (confirm("Tem certeza que deseja excluir?")) {
+        const ok = await api.deleteMember(id);
+        if (ok) {
+            await api.fetchMembers();
+            if(window.renderMembersList) window.renderMembersList(); 
+            alert("Excluído com sucesso!");
+        } else {
+            alert("Erro ao excluir.");
+        }
+    }
+};
+
+// Tornar renderMembersList global para uso em outros arquivos se necessário
+// window.renderMembersList = renderMembersList; // (Já definido em membros.js ou lógica local)
 
 document.addEventListener('DOMContentLoaded', init);

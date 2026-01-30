@@ -19,13 +19,14 @@ const form = document.getElementById('form-auto-inscricao');
     await carregarDadosEvento(eventoId);
 
     // 2. Configura o envio do formulário
-    form.addEventListener('submit', (e) => enviarInscricao(e, eventoId));
+    if(form) {
+        form.addEventListener('submit', (e) => enviarInscricao(e, eventoId));
+    }
 })();
 
 async function carregarDadosEvento(id) {
     try {
-        // Nota: Não enviamos Header Authorization aqui, pois é público
-        const response = await fetch(`${API_BASE_URL}/evento/${id}`);
+        const response = await fetch(`${API_BASE_URL}/evento/${id}`); // Ajuste para o seu endpoint correto
         
         if (response.ok) {
             const evento = await response.json();
@@ -36,7 +37,7 @@ async function carregarDadosEvento(id) {
             `;
         } else {
             tituloEvento.textContent = "Evento não encontrado";
-            form.style.display = 'none';
+            if(form) form.style.display = 'none';
         }
     } catch (error) {
         console.error("Erro ao carregar evento:", error);
@@ -45,7 +46,7 @@ async function carregarDadosEvento(id) {
 
 async function enviarInscricao(e, eventoId) {
     e.preventDefault();
-    const btn = form.querySelector('button');
+    const btn = form.querySelector('button[type="submit"]');
     const txtOriginal = btn.innerHTML;
     
     btn.disabled = true;
@@ -54,32 +55,30 @@ async function enviarInscricao(e, eventoId) {
     const formData = new FormData(form);
     const dadosPessoa = Object.fromEntries(formData.entries());
 
-    // ADICIONA CAMPOS OBRIGATÓRIOS DO DTO AUTOMATICAMENTE
-    // O backend exige esses campos, então fixamos como "Visitante"
-    dadosPessoa.ministerio = "Visitante";
-    dadosPessoa.status = "Visitante";
     
-    // Tratamento de email vazio (Backend exige NotBlank? Se sim, coloque um dummy ou ajuste o Backend)
-    // Assumindo que seu DTO exige email:
     if (!dadosPessoa.email) dadosPessoa.email = "sem_email@cadastro.com";
 
     try {
-        const response = await fetch(`${API_BASE_URL}/eventos/${eventoId}/inscricao-publica`, {
+        const response = await fetch(`${API_BASE_URL}/evento/${eventoId}/inscricao`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }, // Sem Auth Header
-            body: JSON.stringify(dadosPessoa)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify( dadosPessoa )
         });
 
         if (response.ok) {
-            // Sucesso!
+            // Substitui o corpo da página pela mensagem de sucesso
             document.body.innerHTML = `
-                <div class="flex flex-col items-center justify-center min-h-screen text-center p-8 bg-slate-50">
-                    <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                <div class="bg-slate-50 min-h-screen flex flex-col items-center justify-center p-8 text-center">
+                    <div class="bg-white p-8 rounded-3xl shadow-xl max-w-md w-full border border-slate-100">
+                        <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 mx-auto">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        </div>
+                        <h1 class="text-2xl font-black text-slate-800 mb-2">Inscrição Confirmada!</h1>
+                        <p class="text-slate-500 mb-8">Sua presença foi registrada com sucesso na lista do evento.</p>
+                        <button onclick="window.location.reload()" class="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all">
+                            Nova Inscrição
+                        </button>
                     </div>
-                    <h1 class="text-3xl font-black text-slate-800 mb-2">Inscrição Confirmada!</h1>
-                    <p class="text-slate-600 mb-8">Sua presença foi registrada com sucesso.</p>
-                    <button onclick="window.location.reload()" class="text-indigo-600 font-bold hover:underline">Nova Inscrição</button>
                 </div>
             `;
         } else {
@@ -90,8 +89,11 @@ async function enviarInscricao(e, eventoId) {
         console.error(error);
         alert("Erro de conexão com o servidor.");
     } finally {
-        btn.disabled = false;
-        btn.innerHTML = txtOriginal;
+        // Se o elemento ainda existir (não foi substituído pelo sucesso)
+        if(document.body.contains(btn)) {
+            btn.disabled = false;
+            btn.innerHTML = txtOriginal;
+        }
     }
 }
 
