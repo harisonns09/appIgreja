@@ -19,7 +19,7 @@ const form = document.getElementById('form-auto-inscricao');
     await carregarDadosEvento(eventoId);
 
     // 2. Configura o envio do formulário
-    if(form) {
+    if (form) {
         form.addEventListener('submit', (e) => enviarInscricao(e, eventoId));
     }
 })();
@@ -27,7 +27,7 @@ const form = document.getElementById('form-auto-inscricao');
 async function carregarDadosEvento(id) {
     try {
         const response = await fetch(`${API_BASE_URL}/evento/${id}`); // Ajuste para o seu endpoint correto
-        
+
         if (response.ok) {
             const evento = await response.json();
             tituloEvento.textContent = evento.nomeEvento;
@@ -37,7 +37,7 @@ async function carregarDadosEvento(id) {
             `;
         } else {
             tituloEvento.textContent = "Evento não encontrado";
-            if(form) form.style.display = 'none';
+            if (form) form.style.display = 'none';
         }
     } catch (error) {
         console.error("Erro ao carregar evento:", error);
@@ -48,39 +48,57 @@ async function enviarInscricao(e, eventoId) {
     e.preventDefault();
     const btn = form.querySelector('button[type="submit"]');
     const txtOriginal = btn.innerHTML;
-    
+
     btn.disabled = true;
     btn.innerHTML = 'Processando...';
 
     const formData = new FormData(form);
     const dadosPessoa = Object.fromEntries(formData.entries());
 
-    
+
     if (!dadosPessoa.email) dadosPessoa.email = "sem_email@cadastro.com";
 
     try {
         const response = await fetch(`${API_BASE_URL}/evento/${eventoId}/inscricao`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify( dadosPessoa )
+            body: JSON.stringify(dadosPessoa)
         });
 
         if (response.ok) {
-            // Substitui o corpo da página pela mensagem de sucesso
-            document.body.innerHTML = `
-                <div class="bg-slate-50 min-h-screen flex flex-col items-center justify-center p-8 text-center">
-                    <div class="bg-white p-8 rounded-3xl shadow-xl max-w-md w-full border border-slate-100">
-                        <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 mx-auto">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                        </div>
-                        <h1 class="text-2xl font-black text-slate-800 mb-2">Inscrição Confirmada!</h1>
-                        <p class="text-slate-500 mb-8">Sua presença foi registrada com sucesso na lista do evento.</p>
-                        <button onclick="window.location.reload()" class="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all">
-                            Nova Inscrição
-                        </button>
+            const resultado = await response.json();
+            const numInscricao = resultado.numeroInscricao || '---';
+
+            // CORREÇÃO: Selecionamos apenas o container do conteúdo, não o body todo
+            // O '.card-panel' é a div branca onde está o formulário
+            const cardPanel = document.querySelector('.card-panel');
+
+            // Substituímos o conteúdo APENAS de dentro do cartão
+            cardPanel.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-10 text-center animate-fade-in">
+                    
+                    <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                     </div>
+
+                    <h1 class="text-2xl font-black text-slate-800 mb-2">Inscrição Confirmada!</h1>
+                    <p class="text-slate-500 mb-8 max-w-sm">Sua presença foi registrada com sucesso na lista do evento.</p>
+
+                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-6 mb-8 w-full max-w-xs relative overflow-hidden group">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
+                        <p class="text-xs uppercase font-bold text-slate-400 tracking-wider mb-1">Seu Número</p>
+                        <p class="text-3xl font-mono font-bold text-slate-800 tracking-widest">${numInscricao}</p>
+                    </div>
+
+                    <button onclick="window.location.reload()" class="btn-primary w-full max-w-xs">
+                        Nova Inscrição
+                    </button>
+                    
                 </div>
             `;
+
+            // Rola a tela para o topo para garantir que o usuário veja a mensagem
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
             const erro = await response.json();
             alert("Atenção: " + (erro.mensagem || "Erro ao realizar inscrição. Verifique os dados."));
@@ -90,7 +108,7 @@ async function enviarInscricao(e, eventoId) {
         alert("Erro de conexão com o servidor.");
     } finally {
         // Se o elemento ainda existir (não foi substituído pelo sucesso)
-        if(document.body.contains(btn)) {
+        if (document.body.contains(btn)) {
             btn.disabled = false;
             btn.innerHTML = txtOriginal;
         }
@@ -98,7 +116,7 @@ async function enviarInscricao(e, eventoId) {
 }
 
 function formatarData(dataString) {
-    if(!dataString) return "";
+    if (!dataString) return "";
     const [ano, mes, dia] = dataString.split('-');
     return `${dia}/${mes}/${ano}`;
 }
